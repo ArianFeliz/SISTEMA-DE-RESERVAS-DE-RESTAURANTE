@@ -1,89 +1,80 @@
-# La Mesa — Sistema de reservas de restaurante
+# Sistema de reservas
 
-Sistema estático (HTML + CSS + JS, sin build tools) con Firebase como base de
-datos compartida en la nube, pensado para publicarse en GitHub Pages y que
-cualquier persona pueda abrir el link y probarlo con datos reales y
-compartidos entre clientes y administrador.
+Página web para gestionar reservas de un restaurante. El cliente indica la
+fecha, el número de personas y elige una mesa disponible. El administrador
+gestiona las mesas, sus horarios y las reservas desde un panel privado.
 
-## Estructura del proyecto
+## Tecnologías
 
+- HTML y CSS
+- JavaScript con módulos ES
+- Firebase Firestore
+- Firebase Authentication
+
+## Archivos principales
+
+```text
+index.html             Página para clientes
+admin.html             Panel de administración
+css/styles.css         Estilos
+js/config.js           Configuración de Firebase
+js/firebase-init.js    Conexión con Firebase
+js/app.js              Flujo de reservas
+js/admin.js            Funciones del panel
+js/availability.js     Disponibilidad y conflictos
+js/mesas.js            Gestión de mesas
+firestore.rules        Reglas de Firestore
 ```
-├── index.html          → vista de cliente (reservar)
-├── admin.html           → panel de administración
-├── css/
-│   └── styles.css
-├── js/
-│   ├── config.js         → credenciales de Firebase + reglas de negocio
-│   ├── firebase-init.js  → inicialización del SDK
-│   ├── availability.js   → motor de disponibilidad (pieza de mayor riesgo)
-│   ├── mesas.js           → CRUD de mesas
-│   ├── app.js             → lógica de la página de cliente
-│   └── admin.js           → lógica del panel de administración
-└── firestore.rules       → reglas de seguridad (se cargan en Firebase Console)
-```
 
-## 1. Crear el proyecto en Firebase (gratis)
+## Configuración de Firebase
 
-1. Ve a [console.firebase.google.com](https://console.firebase.google.com) → **Crear proyecto**.
-2. Dentro del proyecto, ve a **Compilación → Firestore Database → Crear base de datos** (modo producción, la región más cercana a ti).
-3. Ve a **Compilación → Authentication → Comenzar → Método de acceso → Correo/Contraseña** → habilítalo.
-4. En **Authentication → Users → Añadir usuario**, crea el usuario admin (ej. `admin@turestaurante.com` + una contraseña).
-5. Ve a **Configuración del proyecto (⚙️) → Tus apps → </> (Web)**, registra una app y copia el objeto `firebaseConfig` que te muestra.
+1. Crea un proyecto en [Firebase Console](https://console.firebase.google.com/).
+2. Activa Firestore Database.
+3. Activa Authentication con acceso por correo y contraseña.
+4. Crea el usuario que utilizarás para entrar al panel.
+5. Registra una aplicación web y copia sus datos en `js/config.js`.
+6. Sustituye el correo del administrador en `js/config.js` y `firestore.rules`.
+7. Publica el contenido de `firestore.rules` desde la sección de reglas de Firestore.
 
-## 2. Configurar el proyecto
+## Uso
 
-1. Abre `js/config.js` y pega tu `firebaseConfig` copiado del paso anterior.
-2. Cambia `correoAdmin` por el mismo correo que creaste en Authentication.
-3. Abre `firestore.rules` y reemplaza `admin@turestaurante.com` por ese mismo correo en **ambos** lugares donde aparece.
-4. Los horarios y la duración se configuran por mesa desde `admin.html`.
+En `admin.html`, inicia sesión y crea cada mesa con estos datos:
 
-## 3. Publicar las reglas de seguridad
+- Número de mesa
+- Capacidad de sillas
+- Hora disponible desde
+- Hora disponible hasta
 
-En Firebase Console → **Firestore Database → Reglas**, pega el contenido de `firestore.rules` y pulsa **Publicar**.
+Desde la misma pantalla puedes editar o eliminar mesas y cancelar reservas.
 
-## 4. Probarlo en local (opcional)
+En `index.html`, el cliente selecciona una fecha y el número de personas. Solo
+se muestran mesas individuales con capacidad suficiente. El horario de la
+reserva es el que tiene configurado la mesa y aparece antes de confirmar.
 
-Como usa módulos ES (`type="module"`), no puedes abrir `index.html` con doble clic (el navegador bloquea `fetch` de módulos en `file://`). Usa un servidor simple:
+Al confirmar se genera un código de cancelación de seis caracteres. El cliente
+puede usarlo más tarde en la sección “Cancelar reserva”.
+
+## Ejecutar en local
+
+Los módulos ES necesitan un servidor local. Desde la carpeta del proyecto:
 
 ```bash
 npx serve .
-# o
-python3 -m http.server 8000
 ```
 
-Y abre `http://localhost:8000`.
+Después abre la dirección que indique el comando, normalmente
+`http://localhost:3000`.
 
-## 5. Publicar en GitHub Pages
+## Publicar en GitHub Pages
 
-1. Sube esta carpeta a un repositorio de GitHub.
-2. Ve a **Settings → Pages** del repo.
-3. En **Source**, elige la rama (`main`) y carpeta raíz (`/`).
-4. Guarda — GitHub te dará un link como `https://tu-usuario.github.io/tu-repo/`.
-5. Ese link ya es 100% funcional para cualquier visitante: clientes reservan en `index.html`, tú administras en `admin.html`.
+1. Sube el proyecto a GitHub.
+2. Abre **Settings > Pages**.
+3. Selecciona la rama `main` y la carpeta raíz.
+4. Guarda los cambios y espera a que GitHub genere la dirección pública.
 
-## 6. Primer uso
+## Consideraciones
 
-1. Abre `admin.html`, inicia sesión con el usuario admin que creaste.
-2. Añade cada mesa indicando número, capacidad, horario disponible y duración de reserva.
-3. Comparte el link principal (`index.html`) — ya se puede reservar.
-
-## 7. Cancelación por código
-
-Al confirmar una reserva se genera un código de cancelación de seis caracteres
-y se muestra en el ticket. El cliente puede introducir ese código en la sección
-“Cancelar reserva” para cambiar el estado de esa reserva a `cancelada`; la mesa
- volverá a aparecer disponible para su horario. No se necesita una cuenta ni el
-teléfono del cliente.
-
-Después de cambiar `firestore.rules`, vuelve a publicar las reglas en Firebase
-Console para habilitar esta cancelación desde la página pública.
-
-## Nota sobre la validación de choques de horario
-
-La prevención de dobles reservas se hace con una transacción de Firestore
-(`js/availability.js`) que revalida disponibilidad justo antes de escribir.
-Esto cubre el uso normal de la app. Alguien con conocimientos técnicos que
-manipule la consola del navegador directamente podría, en teoría, saltarse
-esa validación — para blindarlo completamente haría falta mover esa lógica
-a un backend (ej. Cloud Functions), fuera del alcance de esta primera
-versión estática. Ver conversación de diseño para el detalle de este trade-off.
+La disponibilidad se consulta en Firestore y las reservas canceladas dejan de
+bloquear la mesa. Para evitar reservas duplicadas, la validación se repite al
+confirmar la reserva. La lógica se ejecuta en el navegador; para un nivel de
+seguridad mayor habría que mover la creación de reservas a un backend.
