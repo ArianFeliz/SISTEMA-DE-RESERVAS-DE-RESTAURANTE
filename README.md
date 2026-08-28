@@ -1,80 +1,83 @@
 # Sistema de reservas
 
-Página web para gestionar reservas de un restaurante. El cliente indica la
-fecha, el número de personas y elige una mesa disponible. El administrador
-gestiona las mesas, sus horarios y las reservas desde un panel privado.
+Aplicación web para reservar mesas en D'ArianFood.
 
-## Tecnologías
+## Usarlo en línea
 
-- HTML y CSS
-- JavaScript con módulos ES
-- Firebase Firestore
-- Firebase Authentication
+Cuando GitHub Pages esté activo, abre la aplicación desde este enlace:
 
-## Archivos principales
+**[Abrir sistema de reservas](https://arianfeliz.github.io/SISTEMA-DE-RESERVAS-DE-RESTAURANTE/)**
 
-```text
-index.html             Página para clientes
-admin.html             Panel de administración
-css/styles.css         Estilos
-js/config.js           Configuración de Firebase
-js/firebase-init.js    Conexión con Firebase
-js/app.js              Flujo de reservas
-js/admin.js            Funciones del panel
-js/availability.js     Disponibilidad y conflictos
-js/mesas.js            Gestión de mesas
-firestore.rules        Reglas de Firestore
-```
+### Hacer una reserva
 
-## Configuración de Firebase
+1. Abre el enlace principal.
+2. Selecciona la fecha de la visita.
+3. Indica el número de personas.
+4. Pulsa **Ver mesas disponibles**.
+5. Elige una mesa libre.
+6. Escribe tu nombre y teléfono.
+7. Pulsa **Confirmar reserva**.
+8. Guarda el código de cancelación que aparece en el ticket.
 
-1. Crea un proyecto en [Firebase Console](https://console.firebase.google.com/).
-2. Activa Firestore Database.
-3. Activa Authentication con acceso por correo y contraseña.
-4. Crea el usuario que utilizarás para entrar al panel.
-5. Registra una aplicación web y copia sus datos en `js/config.js`.
-6. Sustituye el correo del administrador en `js/config.js` y `firestore.rules`.
-7. Publica el contenido de `firestore.rules` desde la sección de reglas de Firestore.
+El horario de cada mesa aparece en su tarjeta. Las mesas ocupadas o que no
+cuentan con un horario configurado no se pueden seleccionar.
 
-## Uso
+### Cancelar una reserva
 
-En `admin.html`, inicia sesión y crea cada mesa con estos datos:
+1. Vuelve al enlace principal.
+2. Baja hasta **Cancelar reserva**.
+3. Escribe el código de seis caracteres que recibiste al reservar.
+4. Pulsa **Cancelar reserva**.
 
-- Número de mesa
-- Capacidad de sillas
-- Hora disponible desde
-- Hora disponible hasta
+Después de cancelar, la mesa vuelve a estar disponible para esa fecha y horario.
 
-Desde la misma pantalla puedes editar o eliminar mesas y cancelar reservas.
+### Usar el panel de administración
 
-En `index.html`, el cliente selecciona una fecha y el número de personas. Solo
-se muestran mesas individuales con capacidad suficiente. El horario de la
-reserva es el que tiene configurado la mesa y aparece antes de confirmar.
+El panel se encuentra en:
 
-Al confirmar se genera un código de cancelación de seis caracteres. El cliente
-puede usarlo más tarde en la sección “Cancelar reserva”.
+**[Abrir panel admin](https://arianfeliz.github.io/SISTEMA-DE-RESERVAS-DE-RESTAURANTE/admin.html)**
 
-## Ejecutar en local
+1. Inicia sesión con la cuenta del administrador.
+2. Añade una mesa indicando número, capacidad y horario disponible.
+3. Usa **Editar** para cambiar los datos de una mesa.
+4. Usa **Eliminar** para quitar una mesa.
+5. Revisa las reservas filtrando por fecha.
+6. Cancela una reserva desde la tabla cuando sea necesario.
 
-Los módulos ES necesitan un servidor local. Desde la carpeta del proyecto:
+## Usarlo después de descargarlo
+
+1. Entra al repositorio en GitHub.
+2. Pulsa **Code > Download ZIP**.
+3. Descomprime el archivo.
+4. Abre la carpeta descomprimida en VS Code.
+5. Inicia un servidor local desde esa carpeta:
 
 ```bash
 npx serve .
 ```
 
-Después abre la dirección que indique el comando, normalmente
-`http://localhost:3000`.
+6. Abre la dirección que aparezca en la terminal, normalmente
+   `http://localhost:3000`.
 
-## Publicar en GitHub Pages
+También puedes abrir el proyecto con la extensión **Live Server** de VS Code y
+pulsar **Go Live**.
 
-1. Sube el proyecto a GitHub.
-2. Abre **Settings > Pages**.
-3. Selecciona la rama `main` y la carpeta raíz.
-4. Guarda los cambios y espera a que GitHub genere la dirección pública.
+No abras `index.html` directamente con doble clic, porque los módulos de
+JavaScript necesitan ejecutarse desde un servidor local.
 
-## Consideraciones
+## Importante al descargarlo
 
-La disponibilidad se consulta en Firestore y las reservas canceladas dejan de
-bloquear la mesa. Para evitar reservas duplicadas, la validación se repite al
-confirmar la reserva. La lógica se ejecuta en el navegador; para un nivel de
-seguridad mayor habría que mover la creación de reservas a un backend.
+La copia descargada sigue usando la configuración de Firebase incluida en el
+proyecto, por lo que las reservas serán las mismas que aparecen en la versión
+en línea. Descargar el proyecto no crea una base de datos independiente.
+
+Para usarlo con otro restaurante o con otra base de datos hay que cambiar la
+configuración de Firebase en `js/config.js` y publicar las reglas de
+`firestore.rules` en el nuevo proyecto.
+
+## Tecnologías
+
+- HTML y CSS
+- JavaScript
+- Firebase Firestore
+- Firebase Authentication
