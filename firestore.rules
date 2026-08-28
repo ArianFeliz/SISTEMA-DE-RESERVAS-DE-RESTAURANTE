@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /mesas/{mesaId} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.token.email == "admin@turestaurante.com";
+    }
+
+    match /reservas/{reservaId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(
+                        ['mesaId','fecha','horaInicio','horaFin','nombreCliente','personas','estado','codigoCancelacion']
+                      )
+                    && request.resource.data.keys().hasAll(
+                        ['mesaId','fecha','horaInicio','horaFin','nombreCliente','personas','estado','codigoCancelacion']
+                      )
+                    && request.resource.data.mesaId is string
+                    && request.resource.data.fecha is string
+                    && request.resource.data.nombreCliente is string
+                    && request.resource.data.personas is int
+                    && request.resource.data.personas > 0
+                    && request.resource.data.estado == "confirmada"
+                    && request.resource.data.horaInicio is string
+                    && request.resource.data.horaFin is string
+                    && request.resource.data.codigoCancelacion is string
+                    && request.resource.data.codigoCancelacion.size() == 6;
+        allow update: if (request.auth != null
+                 && request.auth.token.email == "admin@turestaurante.com")
+              || (resource.data.estado == "confirmada"
+                && request.resource.data.estado == "cancelada"
+                && request.resource.data.codigoCancelacion == resource.data.codigoCancelacion
+                && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado']));
+        allow delete: if request.auth != null
+              && request.auth.token.email == "admin@turestaurante.com";
+    }
+  }
+}

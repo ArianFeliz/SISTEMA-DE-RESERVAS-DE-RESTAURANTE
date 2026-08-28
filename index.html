@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D'ArianFood — Reservas</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="marquee">
+  <div class="eyebrow">D'ArianFood</div>
+  <h1>D'ArianFood</h1>
+  <p class="tagline">Elige fecha, hora y número de comensales — te asignamos la mesa.</p>
+  <nav><a href="admin.html">Panel de administración →</a></nav>
+</header>
+
+<main class="wrap">
+
+  <section class="card">
+    <div class="section-title">Paso 1 — Detalles de tu visita</div>
+    <form id="form-detalles" class="form-grid">
+      <div>
+        <label for="fecha">Fecha</label>
+        <input type="date" id="fecha" required>
+      </div>
+      <div>
+        <label for="personas">Número de personas</label>
+        <input type="number" id="personas" min="1" max="20" value="2" required>
+      </div>
+      <div class="full" style="align-self:end;">
+        <button type="submit" class="btn-secondary">Ver mesas disponibles</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card" id="seccion-mesas" style="margin-top:1.5rem; display:none;">
+    <div class="section-title">Paso 2 — Elige tu mesa</div>
+    <p id="resumen-busqueda" style="font-size:0.88rem; color:var(--candle-dim);"></p>
+    <div class="mesas-grid" id="mesas-grid"></div>
+    <div class="status-legend" aria-label="Estados de mesa">
+      <span><i></i>Libre</span>
+      <span class="status-busy"><i></i>Ocupada</span>
+      <span class="status-missing"><i></i>Sin horario</span>
+    </div>
+  </section>
+
+  <section class="card" id="seccion-datos" style="margin-top:1.5rem; display:none;">
+    <div class="section-title">Paso 3 — Tus datos</div>
+    <form id="form-cliente" class="form-grid">
+      <div>
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" required>
+      </div>
+      <div>
+        <label for="telefono">Teléfono</label>
+        <input type="tel" id="telefono" required>
+      </div>
+      <div class="full">
+        <button type="submit" class="btn-primary" id="btn-confirmar">Confirmar reserva</button>
+      </div>
+    </form>
+    <div id="mensaje-reserva"></div>
+  </section>
+
+  <section id="seccion-ticket" style="margin-top:1.5rem; display:none;">
+    <div class="ticket">
+      <div class="eyebrow" style="color:var(--rust-dark); font-size:0.7rem; letter-spacing:0.2em;">TICKET DE RESERVA</div>
+      <h3 id="ticket-titulo">Reserva confirmada</h3>
+      <dl id="ticket-detalles"></dl>
+      <div class="seal">Confirmada</div>
+    </div>
+    <button class="btn-secondary" id="btn-nueva-reserva" style="margin-top:1rem;">Hacer otra reserva</button>
+  </section>
+
+  <section class="card" style="margin-top:1.5rem;">
+    <div class="section-title">Cancelar reserva</div>
+    <form id="form-cancelar" class="form-grid">
+      <div>
+        <label for="codigo-cancelacion">Código de cancelación</label>
+        <input type="text" id="codigo-cancelacion" minlength="6" maxlength="6" pattern="[A-Za-z0-9]{6}" autocomplete="off" required>
+      </div>
+      <div style="align-self:end;">
+        <button type="submit" class="btn-secondary">Cancelar reserva</button>
+      </div>
+    </form>
+    <div id="mensaje-cancelacion" aria-live="polite"></div>
+  </section>
+
+</main>
+
+<footer class="foot">D'ArianFood · Sistema de reservas </footer>
+
+<script src="js/effects.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
