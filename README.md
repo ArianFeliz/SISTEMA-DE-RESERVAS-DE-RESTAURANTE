@@ -44,37 +44,6 @@ El panel se encuentra en:
 5. Revisa las reservas filtrando por fecha.
 6. Cancela una reserva desde la tabla cuando sea necesario.
 
-## Usarlo después de descargarlo
-
-1. Entra al repositorio en GitHub.
-2. Pulsa **Code > Download ZIP**.
-3. Descomprime el archivo.
-4. Abre la carpeta descomprimida en VS Code.
-5. Inicia un servidor local desde esa carpeta:
-
-```bash
-npx serve .
-```
-
-6. Abre la dirección que aparezca en la terminal, normalmente
-   `http://localhost:3000`.
-
-También puedes abrir el proyecto con la extensión **Live Server** de VS Code y
-pulsar **Go Live**.
-
-No abras `index.html` directamente con doble clic, porque los módulos de
-JavaScript necesitan ejecutarse desde un servidor local.
-
-## Importante al descargarlo
-
-La copia descargada sigue usando la configuración de Firebase incluida en el
-proyecto, por lo que las reservas serán las mismas que aparecen en la versión
-en línea. Descargar el proyecto no crea una base de datos independiente.
-
-Para usarlo con otro restaurante o con otra base de datos hay que cambiar la
-configuración de Firebase en `js/config.js` y publicar las reglas de
-`firestore.rules` en el nuevo proyecto.
-
 ## Tecnologías
 
 - HTML y CSS
